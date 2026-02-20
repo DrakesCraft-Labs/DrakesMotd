@@ -1,0 +1,30 @@
+# Estado global del servidor para el MOTD.
+# Valores válidos: LIVE, BETA, MAINTENANCE
+state: LIVE
+
+# Texto de respaldo si no hay líneas para el estado actual.
+# Soporta MiniMessage y colores hex/gradientes.
+fallback-motd: "<gradient:gold:yellow><b>DrakesCore</b></gradient>\n<gray>Welcome to the network</gray>"
+
+motd:
+  # MOTD cuando el servidor está online para jugadores normales.
+  live:
+    - "<gradient:green:aqua><b>DrakesCraft Network</b></gradient>"
+    - "<gray>Mode:</gray> <green>LIVE</green> <dark_gray>|</dark_gray> <yellow>play.drakescraft.net</yellow>"
+
+  # MOTD para fases de pruebas cerradas/abiertas.
+  beta:
+    - "<gradient:yellow:gold><b>DrakesCraft BETA</b></gradient>"
+    - "<gray>Features in testing. Expect changes.</gray>"
+
+  # MOTD de mantenimiento.
+  maintenance:
+    - "<gradient:red:dark_red><b>Maintenance Mode</b></gradient>"
+    - "<gray>We will be back soon.</gray>"
+
+# Carpeta de iconos:
+# plugins/DrakesCore/icons/
+# - maintenance.png
+# - beta.png
+# - live.png
+# Si no son 64x64, el sistema las redimensiona automáticamente.
