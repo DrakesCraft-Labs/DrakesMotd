@@ -1,25 +1,27 @@
 # DrakesMotd
 
-## Qué es
-MOTD dinámico con estados (`LIVE`, `BETA`, `MAINTENANCE`) e íconos auto-resize.
+Plugin de imagen publica del servidor, extraido del modulo `drakesmotd` del antiguo `DrakesCore`.
 
-## Arquitectura
-- `MotdManager` maneja el ping, el estado y el icono.
-- Estado definido en `motd.yml`.
+## Objetivo
+Controlar el MOTD y el icono del server list segun estado operativo del servidor.
 
-## Hecho
-- Listener `ServerListPingEvent`.
-- MiniMessage + hex/gradientes.
-- Íconos dinámicos desde `plugins/DrakesMotd/icons/`.
-- Auto-resize a 64x64 usando `Graphics2D`.
+## Que hace hoy
+- Intercepta `ServerListPingEvent`.
+- Renderiza MOTD con MiniMessage (incluye hex/gradients).
+- Maneja estados: `LIVE`, `BETA`, `MAINTENANCE`.
+- Carga iconos desde `plugins/DrakesMotd/icons/`.
+- Si el PNG no es 64x64, lo redimensiona automaticamente con `Graphics2D`.
 
-## Falta
-- Rotación de MOTD por tiempo dentro de un mismo estado (opcional).
-- Caché por estado + timer para iconos si se cambian en caliente.
-
-## Configuración
-- `motd.yml` con comentarios in-line.
+## Configuracion
+- `src/main/resources/motd.yml`
+- Estado activo en `state`.
+- Textos por estado en `motd.live|beta|maintenance`.
 
 ## Dependencias
 - Paper 1.20.6
 - Java 21
+
+## Pendiente real
+- Comando `/drakesmotd reload` para recargar sin reinicio.
+- Rotacion temporal de lineas MOTD dentro del mismo estado.
+- Estrategia de invalidacion de cache de iconos en caliente.
