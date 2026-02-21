@@ -9,6 +9,7 @@ commands:
     description: Manage DrakesMotd state and reload
     usage: /drakesmotd <reload|state>
     permission: drakesmotd.admin
+    aliases: [dmotd, drmotd]
 permissions:
   drakesmotd.admin:
     description: Allows administration of DrakesMotd
