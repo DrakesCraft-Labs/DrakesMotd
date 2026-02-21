@@ -9,8 +9,10 @@ Controlar el MOTD y el icono del server list segun estado operativo del servidor
 - Intercepta `ServerListPingEvent`.
 - Renderiza MOTD con MiniMessage (incluye hex/gradients).
 - Maneja estados: `LIVE`, `BETA`, `MAINTENANCE`.
+- Rotacion opcional de frames MOTD por estado (`rotation.*-frames`).
 - Carga iconos desde `plugins/DrakesMotd/icons/`.
 - Si el PNG no es 64x64, lo redimensiona automaticamente con `Graphics2D`.
+- Comando admin `/drakesmotd` para `reload` y cambio de `state` en caliente.
 
 ## Configuracion
 - `src/main/resources/motd.yml`
@@ -22,6 +24,4 @@ Controlar el MOTD y el icono del server list segun estado operativo del servidor
 - Java 21
 
 ## Pendiente real
-- Comando `/drakesmotd reload` para recargar sin reinicio.
-- Rotacion temporal de lineas MOTD dentro del mismo estado.
-- Estrategia de invalidacion de cache de iconos en caliente.
+- Integracion de placeholders de estado con otros plugins de red.

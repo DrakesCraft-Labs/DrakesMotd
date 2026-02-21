@@ -1,30 +1,50 @@
-# Estado global del servidor para el MOTD.
-# Valores válidos: LIVE, BETA, MAINTENANCE
+# Active server state for MOTD rendering.
+# Valid values: LIVE, BETA, MAINTENANCE
 state: LIVE
 
-# Texto de respaldo si no hay líneas para el estado actual.
-# Soporta MiniMessage y colores hex/gradientes.
+# Fallback MOTD if current state has no lines configured.
+# Supports MiniMessage, RGB, and gradients.
 fallback-motd: "<gradient:gold:yellow><b>DrakesCore</b></gradient>\n<gray>Welcome to the network</gray>"
 
 motd:
-  # MOTD cuando el servidor está online para jugadores normales.
+  # MOTD lines shown while server is fully open.
   live:
     - "<gradient:green:aqua><b>DrakesCraft Network</b></gradient>"
     - "<gray>Mode:</gray> <green>LIVE</green> <dark_gray>|</dark_gray> <yellow>play.drakescraft.net</yellow>"
 
-  # MOTD para fases de pruebas cerradas/abiertas.
+  # MOTD lines for testing or staged release windows.
   beta:
     - "<gradient:yellow:gold><b>DrakesCraft BETA</b></gradient>"
     - "<gray>Features in testing. Expect changes.</gray>"
 
-  # MOTD de mantenimiento.
+  # MOTD lines for maintenance windows.
   maintenance:
     - "<gradient:red:dark_red><b>Maintenance Mode</b></gradient>"
     - "<gray>We will be back soon.</gray>"
 
-# Carpeta de iconos:
-# plugins/DrakesCore/icons/
-# - maintenance.png
-# - beta.png
+rotation:
+  # Enable rotating MOTD frames per state.
+  # Each ping request advances to next frame.
+  enabled: true
+
+  # Optional rotation frames for LIVE.
+  # Use "\n" for second line inside a single frame.
+  live-frames:
+    - "<gradient:green:aqua><b>DrakesCraft Network</b></gradient>\n<gray>Mode:</gray> <green>LIVE</green> <dark_gray>|</dark_gray> <yellow>play.drakescraft.net</yellow>"
+    - "<gradient:aqua:blue><b>DrakesCraft Network</b></gradient>\n<gray>Survival + Tech + Crates</gray>"
+
+  # Optional rotation frames for BETA.
+  beta-frames:
+    - "<gradient:yellow:gold><b>DrakesCraft BETA</b></gradient>\n<gray>Features in testing. Expect changes.</gray>"
+
+  # Optional rotation frames for MAINTENANCE.
+  maintenance-frames:
+    - "<gradient:red:dark_red><b>Maintenance Mode</b></gradient>\n<gray>We will be back soon.</gray>"
+
+# Icon folder: plugins/DrakesMotd/icons/
+# State-specific names are supported:
 # - live.png
-# Si no son 64x64, el sistema las redimensiona automáticamente.
+# - beta.png
+# - maintenance.png
+# Any PNG found here will be auto-resized to 64x64 if needed.
+# [DANGER] Very large source images increase startup/resolution cost.

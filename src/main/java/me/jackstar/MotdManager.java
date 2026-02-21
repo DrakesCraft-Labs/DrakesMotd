@@ -32,9 +32,12 @@ public class MotdManager implements Listener {
     private final JavaPlugin plugin;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final Map<MotdState, List<String>> motdByState = new EnumMap<>(MotdState.class);
+    private final Map<MotdState, List<String>> rotatingFramesByState = new EnumMap<>(MotdState.class);
+    private final Map<MotdState, Integer> rotationIndexByState = new EnumMap<>(MotdState.class);
     private final Map<String, CachedServerIcon> iconCache = new java.util.concurrent.ConcurrentHashMap<>();
     private MotdState currentState = MotdState.LIVE;
     private String fallbackMotd = "<green>DrakesCore</green>";
+    private boolean rotationEnabled = false;
 
     public MotdManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -46,6 +49,10 @@ public class MotdManager implements Listener {
         org.bukkit.configuration.file.FileConfiguration config = loadConfig();
         fallbackMotd = config.getString("fallback-motd", fallbackMotd);
         currentState = parseState(config.getString("state", "LIVE"));
+        rotationEnabled = config.getBoolean("rotation.enabled", false);
+        iconCache.clear();
+        rotatingFramesByState.clear();
+        rotationIndexByState.clear();
 
         for (MotdState state : MotdState.values()) {
             List<String> lines = config.getStringList("motd." + state.name().toLowerCase(Locale.ROOT));
@@ -53,13 +60,40 @@ public class MotdManager implements Listener {
                 lines = List.of(fallbackMotd);
             }
             motdByState.put(state, new ArrayList<>(lines));
+
+            List<String> frames = config.getStringList("rotation." + state.name().toLowerCase(Locale.ROOT) + "-frames");
+            if (!frames.isEmpty()) {
+                rotatingFramesByState.put(state, new ArrayList<>(frames));
+            }
+            rotationIndexByState.put(state, 0);
         }
+    }
+
+    public MotdState getCurrentState() {
+        return currentState;
+    }
+
+    public boolean setCurrentState(MotdState state, boolean persist) {
+        if (state == null) {
+            return false;
+        }
+        currentState = state;
+        if (persist) {
+            try {
+                org.bukkit.configuration.file.FileConfiguration config = loadConfig();
+                config.set("state", state.name());
+                config.save(new File(plugin.getDataFolder(), "motd.yml"));
+            } catch (Exception ex) {
+                plugin.getLogger().warning("Could not persist MOTD state: " + ex.getMessage());
+                return false;
+            }
+        }
+        return true;
     }
 
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        List<String> lines = motdByState.getOrDefault(currentState, List.of(fallbackMotd));
-        String motdMini = String.join("\n", lines);
+        String motdMini = resolveMotdForState(currentState);
         Component motdComponent = miniMessage.deserialize(motdMini);
         event.setMotd(LEGACY_SERIALIZER.serialize(motdComponent));
 
@@ -67,6 +101,24 @@ public class MotdManager implements Listener {
         if (icon != null) {
             event.setServerIcon(icon);
         }
+    }
+
+    private String resolveMotdForState(MotdState state) {
+        if (rotationEnabled) {
+            List<String> frames = rotatingFramesByState.get(state);
+            if (frames != null && !frames.isEmpty()) {
+                int currentIndex = rotationIndexByState.getOrDefault(state, 0);
+                int safeIndex = Math.floorMod(currentIndex, frames.size());
+                rotationIndexByState.put(state, safeIndex + 1);
+                String selected = frames.get(safeIndex);
+                if (selected != null && !selected.isBlank()) {
+                    return selected;
+                }
+            }
+        }
+
+        List<String> lines = motdByState.getOrDefault(state, List.of(fallbackMotd));
+        return String.join("\n", lines);
     }
 
     private CachedServerIcon resolveIconForState(MotdState state) {
@@ -136,10 +188,10 @@ public class MotdManager implements Listener {
     }
 
     private void saveDefaultConfigFile() {
-        if (plugin.getResource("motd.yml") != null) {
+        File file = new File(plugin.getDataFolder(), "motd.yml");
+        if (!file.exists() && plugin.getResource("motd.yml") != null) {
             plugin.saveResource("motd.yml", false);
         } else {
-            File file = new File(plugin.getDataFolder(), "motd.yml");
             if (!file.exists()) {
                 try {
                     if (!plugin.getDataFolder().exists()) {

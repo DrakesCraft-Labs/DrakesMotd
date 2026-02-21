@@ -4,3 +4,12 @@ main: me.jackstar.drakesmotd.DrakesMotdPlugin
 api-version: '1.20'
 authors: [JackStar]
 description: MOTD and server icon system for DrakesCraft
+commands:
+  drakesmotd:
+    description: Manage DrakesMotd state and reload
+    usage: /drakesmotd <reload|state>
+    permission: drakesmotd.admin
+permissions:
+  drakesmotd.admin:
+    description: Allows administration of DrakesMotd
+    default: op
