@@ -3,14 +3,14 @@
 Plugin de imagen publica del servidor, extraido del modulo `drakesmotd` del antiguo `DrakesCore`.
 
 ## Objetivo
-Controlar el MOTD y el icono del server list segun estado operativo del servidor.
+Controlar el MOTD y el icon del server list segun estado operativo del servidor.
 
 ## Que hace hoy
 - Intercepta `ServerListPingEvent`.
 - Renderiza MOTD con MiniMessage (incluye hex/gradients).
 - Maneja estados: `LIVE`, `BETA`, `MAINTENANCE`.
 - Rotacion opcional de frames MOTD por estado (`rotation.*-frames`).
-- Carga iconos desde `plugins/DrakesMotd/icons/`.
+- Carga icons desde `plugins/DrakesMotd/icons/`.
 - Si el PNG no es 64x64, lo redimensiona automaticamente con `Graphics2D`.
 - Comando admin `/drakesmotd` para `reload` y cambio de `state` en caliente.
 
