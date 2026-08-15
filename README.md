@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DrakesCraft-Labs/DrakesMotd/master/banner.svg" width="100%" alt="DRAKES MOTD animated banner" />
+</p>
+
 # DrakesMotd
 
 Plugin de imagen publica del servidor, extraido del modulo `drakesmotd` del antiguo `DrakesCore`.
@@ -25,3 +29,4 @@ Controlar el MOTD y el icono del server list segun estado operativo del servidor
 
 ## Pendiente real
 - Integracion de placeholders de estado con otros plugins de red.
+
